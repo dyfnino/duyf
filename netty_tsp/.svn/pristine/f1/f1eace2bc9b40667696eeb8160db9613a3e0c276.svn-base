@@ -1,0 +1,60 @@
+package com.samton.server;
+
+import com.samton.util.LogProducerUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-7
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class RedisAndKafThread implements Runnable {
+
+    public RedisAndKafThread(LogProducerUtils kafk, Jedis jedis) {
+        this.kafk=kafk;
+        this.jedis=jedis;
+    }
+    private  LogProducerUtils kafk;
+    private Jedis jedis;
+
+    public Jedis getJedis() {
+        return jedis;
+    }
+
+    public void setJedis(Jedis jedis) {
+        this.jedis = jedis;
+    }
+
+    public LogProducerUtils getKafk() {
+        return kafk;
+    }
+
+    public void setKafk(LogProducerUtils kafk) {
+        this.kafk = kafk;
+    }
+
+    public void run() {
+        try {
+            LogProducerUtils kafk1 = new LogProducerUtils();
+            ApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-mvc-redis.xml");
+            JedisPool jedisPool =(JedisPool)context.getBean("jedisPool");
+            Jedis jedis1 =jedisPool.getResource();
+
+            RedisAndKafThread re=new RedisAndKafThread(kafk1,jedis1);
+                       re.setJedis(jedis1);
+                       re.setKafk(kafk1);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+
+}
+
+
+

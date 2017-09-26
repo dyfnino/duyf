@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+ <!--
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        最大空闲数
+        <property name="maxIdle" value="50" />
+        最大连接数
+        <property name="maxTotal" value="100" />
+        < 连接建立最大等待时间
+        <property name="maxWaitMillis" value="1000"></property>
+     检验连接，失败取另一个连接
+        <property name="testOnBorrow" value="true" />
+    </bean>  -->
+
+    <!-- 连接redis数据库
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" >
+        <constructor-arg index="0" name="poolConfig" ref="poolConfig" />
+        <constructor-arg index="1" value="112.35.29.197" />
+        <constructor-arg index="2" value="17479" type="int" />
+        <constructor-arg index="3" value="$1$samtonre$qy/tQZ1rQFL5IvDa6vrss."></constructor-arg>
+    </bean>
+        -->
+
+        <bean id="jedisPoolConfig"class="redis.clients.jedis.JedisPoolConfig">
+            <property name="maxActive" value="32"></property>
+            <property name="maxIdle" value="6"></property>
+            <property name="maxWait" value="15000"></property>
+            <property name="minEvictableIdleTimeMillis" value="300000"></property>
+            <property name="numTestsPerEvictionRun" value="3"></property>
+            <property name="timeBetweenEvictionRunsMillis" value="60000"></property>
+            <property name="whenExhaustedAction" value="1"></property>
+        </bean>
+        <bean id="jedisPool"class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+                <!--config -->
+            <constructor-arg ref="jedisPoolConfig"></constructor-arg>
+                    <!-- host -->
+            <constructor-arg value="192.168.161.130"></constructor-arg>
+                    <!-- port -->
+            <constructor-arg value="6379"></constructor-arg>
+                    <!-- timeout -->
+            <constructor-arg value="100"></constructor-arg>
+                    <!-- password -->
+            <constructor-arg value="$1$samtonre$qy/tQZ1rQFL5IvDa6vrss."></constructor-arg>
+
+        </bean>
+
+
+</beans>

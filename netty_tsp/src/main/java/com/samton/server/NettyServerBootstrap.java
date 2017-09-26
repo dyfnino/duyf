@@ -1,0 +1,119 @@
+package com.samton.server;
+
+
+import com.samton.util.LogProducerUtils;
+import com.samton.util.RedisUtil;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.codec.socks.SocksRequestType;
+import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.internal.logging.Slf4JLoggerFactory;
+import org.jboss.netty.handler.execution.ExecutionHandler;
+import org.jboss.netty.handler.execution.MemoryAwareThreadPoolExecutor;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-8-31
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class NettyServerBootstrap {
+    private static final InternalLogger log = InternalLoggerFactory.getInstance(NettyServerBootstrap.class);
+    private int port;
+    private LogProducerUtils kafa;
+    private RedisUtil redis;
+
+    public RedisUtil getConn() {
+
+        redis = new RedisUtil("112.35.29.197", 17479, 10000, "$1$samtonre$qy/tQZ1rQFL5IvDa6vrss.");
+        log.debug("redis" + redis);
+        return redis;
+    }
+
+    public NettyServerBootstrap(int port) throws InterruptedException {
+        long strart = System.currentTimeMillis();
+        redis = getConn();
+        long end = System.currentTimeMillis();
+        log.debug("redis连接时间" + (end - strart));
+        try {
+            kafa = new LogProducerUtils();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.port = port;
+        bind();
+    }
+
+    public void bind() throws InterruptedException {
+        EventLoopGroup boss = new NioEventLoopGroup();
+
+        EventLoopGroup worker = new NioEventLoopGroup();
+        try {
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap.group(boss, worker);
+            bootstrap.channel(NioServerSocketChannel.class);
+            //连接数
+            bootstrap.childOption(ChannelOption.SO_BACKLOG, 1024);
+            //通过NoDelay禁用Nagle,使消息立即发出去，不用等待到一定的数据量才发出去
+            bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+            //重用地址
+            // bootstrap.childOption(ChannelOption.SO_REUSEADDR, true);
+            //设置缓存区大小
+            bootstrap.childOption(ChannelOption.SO_RCVBUF, 1024);
+            //保持长连接状态
+            bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+            //连接超时设置
+            // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS,1000);
+            //
+            bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
+
+                @Override
+                protected void initChannel(SocketChannel socketChannel) throws Exception {
+
+                    ChannelPipeline p = socketChannel.pipeline();
+
+
+                    ExecutionHandler executionHandler = new ExecutionHandler(new MemoryAwareThreadPoolExecutor(16, 1048576, 1048576));
+
+                    p.addLast(new ObjectEncoder());
+                    p.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+                    //读写超时设置
+                    p.addLast("idleStateHandler", new IdleStateHandler(60, 30, 0));
+                    p.addLast(new NettyServerHandler(kafa, redis));
+
+                }
+
+            });
+
+            ChannelFuture f = bootstrap.bind(9999).sync();
+            System.out.println("server start---------------");
+            // 等待服务器 socket 关闭 。在这个例子中，这不会发生，但你可以优雅地关闭你的服务器。
+            f.channel().closeFuture().sync();
+
+
+        } catch (Exception e) {
+            System.out.println("启动Netty服务异常，异常信息：" + e.getMessage());
+            e.printStackTrace();
+            log.debug("启动Netty服务异常" + e);
+        } finally {
+            boss.shutdownGracefully();
+            worker.shutdownGracefully();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        InternalLoggerFactory.setDefaultFactory(new Slf4JLoggerFactory());
+        NettyServerBootstrap bootstrap = new NettyServerBootstrap(9999);
+    }
+
+
+}

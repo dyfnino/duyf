@@ -1,0 +1,73 @@
+package enums;
+
+import enums.MsgType;
+import msg.BaseMsg;
+
+/**
+ * Created by flytome on 2017/9/12.
+ */
+
+public class TSPConfigure extends BaseMsg {
+
+
+    public int  gps_uprate;//上传频率
+    public double  acceleration;//急加速度
+    public double  deceleration;//急减速度
+    public int  angular_velocity;//急转速度
+    public double  instantaneous;//瞬时速度
+
+    public TSPConfigure() {
+        super();
+        setType(MsgType.TSPCONFIGURE);
+    }
+
+    public int getSwerve() {
+        return swerve;
+    }
+
+    public int getGps_uprate() {
+        return gps_uprate;
+    }
+
+    public double getAcceleration() {
+        return acceleration;
+    }
+
+    public double getDeceleration() {
+        return deceleration;
+    }
+
+    public int getAngular_velocity() {
+        return angular_velocity;
+    }
+
+    public double getInstantaneous() {
+        return instantaneous;
+    }
+
+
+
+    public void setSwerve(int swerve) {
+        this.swerve = swerve;
+    }
+
+    public void setGps_uprate(int gps_uprate) {
+        this.gps_uprate = gps_uprate;
+    }
+
+    public void setAcceleration(double acceleration) {
+        this.acceleration = acceleration;
+    }
+
+    public void setDeceleration(double deceleration) {
+        this.deceleration = deceleration;
+    }
+
+    public void setAngular_velocity(int angular_velocity) {
+        this.angular_velocity = angular_velocity;
+    }
+
+    public void setInstantaneous(double instantaneous) {
+        this.instantaneous = instantaneous;
+    }
+}

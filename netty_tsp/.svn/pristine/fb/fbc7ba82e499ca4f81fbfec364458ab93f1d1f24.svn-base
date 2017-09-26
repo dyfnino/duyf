@@ -1,0 +1,224 @@
+package com.samton.vo.gps;
+
+import com.alibaba.fastjson.JSONObject;
+import com.samton.enums.MsgType;
+import com.samton.msg.BaseMsg;
+
+import java.io.Serializable;
+
+/**
+ *
+ * GPS 信息
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/27
+ */
+public class GpsBasicInfoVo extends BaseMsg{
+   // implements Serializable
+    public GpsBasicInfoVo() {
+        super();
+        setType(MsgType.LOGIN);
+    }
+    //    termCode		设备ID（String）
+//    timeStam		时间（Long）
+//    latitude			经度：（W87232323）（String）
+//    longtude 		纬度：（N87121212）（String）
+//    altitude			高程（Double）
+//    speedsss			速度（Double）
+//    director			方向（Int）
+//
+//    satellit			连接卫星数（Int）
+//    tempOnes		保留1(Long)
+//    tempTwos		保留2(Long)
+//    tempThre		保留3(Long)
+//
+//    netStand			当前网络制式(String)为了用来展示？ 还是int(为了筛选)
+//    signalLv			当前信号等级(Int)
+//    wifiStat			状态(Int)
+  //  public String clientId;
+    /**
+     * 设备ID（String）
+     */
+    public String termCode;
+
+    /**
+     * 时间（Long）
+     */
+    public long timeStam;
+
+    /**
+     * 经度：（W87232323）（String）
+     */
+    public String latitude;
+
+    /**
+     * 纬度：（N87121212）（String）
+     */
+    public String longitude;
+
+    /**
+     * 高程（Double）
+     */
+    public double altitude;
+
+    /**
+     * 速度（Double）
+     */
+    public double speedsss;
+
+    /**
+     * 方向（Int）
+     */
+    public int director;
+
+    /**
+     * 连接卫星数（Int）
+     */
+    public int satellit;
+
+    /**
+     * 保留1(Long)
+     */
+    public long tempOnes;
+
+    /**
+     * 保留2(Long)
+     */
+    public long tempTwos;
+
+    /**
+     * 保留3(Long)
+     */
+    public long tempThre;
+
+    /**
+     * 当前网络制式(String)为了用来展示？ 还是int(为了筛选)
+     */
+    public String netStand;
+
+    /**
+     * 当前信号等级(Int)
+     */
+    public int signalLv;
+
+    /**
+     * 状态(Int)
+     */
+    public int wifiStat;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimeStam() {
+        return timeStam;
+    }
+
+    public void setTimeStam(long timeStam) {
+        this.timeStam = timeStam;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getAltitude() {
+        return altitude;
+    }
+
+    public void setAltitude(Double altitude) {
+        this.altitude = altitude;
+    }
+
+    public Double getSpeedsss() {
+        return speedsss;
+    }
+
+    public void setSpeedsss(Double speedsss) {
+        this.speedsss = speedsss;
+    }
+
+    public int getDirector() {
+        return director;
+    }
+
+    public void setDirector(int director) {
+        this.director = director;
+    }
+
+    public int getSatellit() {
+        return satellit;
+    }
+
+    public void setSatellit(int satellit) {
+        this.satellit = satellit;
+    }
+
+    public long getTempOnes() {
+        return tempOnes;
+    }
+
+    public void setTempOnes(long tempOnes) {
+        this.tempOnes = tempOnes;
+    }
+
+    public long getTempTwos() {
+        return tempTwos;
+    }
+
+    public void setTempTwos(long tempTwos) {
+        this.tempTwos = tempTwos;
+    }
+
+    public long getTempThre() {
+        return tempThre;
+    }
+
+    public void setTempThre(long tempThre) {
+        this.tempThre = tempThre;
+    }
+
+    public String getNetStand() {
+        return netStand;
+    }
+
+    public void setNetStand(String netStand) {
+        this.netStand = netStand;
+    }
+
+    public int getSignalLv() {
+        return signalLv;
+    }
+
+    public void setSignalLv(int signalLv) {
+        this.signalLv = signalLv;
+    }
+
+    public int getWifiStat() {
+        return wifiStat;
+    }
+
+    public void setWifiStat(int wifiStat) {
+        this.wifiStat = wifiStat;
+    }
+
+    public static  void main(String[] args){
+        System.out.print(JSONObject.toJSONString(new GpsBasicInfoVo()));
+    }
+}

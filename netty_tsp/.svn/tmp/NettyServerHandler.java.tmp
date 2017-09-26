@@ -1,0 +1,581 @@
+package com.samton.server;
+
+import com.samton.util.DocumentCommun;
+import com.samton.util.LogProducerUtils;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.ReferenceCountUtil;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.socket.SocketChannel;
+import msg.*;
+import org.bson.Document;
+import redis.clients.jedis.Jedis;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-8-31
+ * 说明:
+ * T
+ */
+public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
+   private static final InternalLogger log = InternalLoggerFactory.getInstance(NettyServerHandler.class);
+
+    public NettyServerHandler(LogProducerUtils kafk, Jedis jedis) {
+        this.kafk = kafk;
+        this.jedis = jedis;
+    }
+
+   private  Jedis jedis;
+   private  LogProducerUtils kafk;
+
+    public LogProducerUtils getKafk() {
+        return kafk;
+    }
+
+    public void setKafk(LogProducerUtils kafk) {
+        this.kafk = kafk;
+    }
+
+    public Jedis getJedis() {
+        return jedis;
+    }
+
+    public void setJedis(Jedis jedis) {
+        this.jedis = jedis;
+    }
+
+    public NettyServerHandler(LogProducerUtils kafk, Jedis jedis) {
+        this.kafk = kafk;
+        this.jedis = jedis;
+    }
+
+    private Jedis jedis;
+    private LogProducerUtils kafk;
+
+    public LogProducerUtils getKafk() {
+        return kafk;
+    }
+
+    public void setKafk(LogProducerUtils kafk) {
+        this.kafk = kafk;
+    }
+
+    public Jedis getJedis() {
+        return jedis;
+    }
+
+    public void setJedis(Jedis jedis) {
+        this.jedis = jedis;
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        //channel失效，从Map中移除
+        NettyChannelMap.remove((SocketChannel) ctx.channel());
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.out.println("错误原因：" + cause.getMessage());
+        ctx.fireExceptionCaught(cause);
+        cause.printStackTrace();
+        log.info(cause);
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object msg) throws Exception {
+        TSPPingMsg pingMsg = new TSPPingMsg();
+        if (msg instanceof IdleStateEvent) {
+            IdleStateEvent e = (IdleStateEvent) msg;
+
+            switch (e.state()) {
+                case WRITER_IDLE:
+
+                    ctx.writeAndFlush(pingMsg);
+                    System.out.println("send ping to client----------");
+                    break;
+                case READER_IDLE:
+
+                    ctx.writeAndFlush(pingMsg);
+                    System.out.println("send ping to client----------");
+                    break;
+                case ALL_IDLE:
+                    ctx.writeAndFlush(pingMsg);
+                    System.out.println("send ping to client----------");
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /*
+
+    类型匹配
+    *
+    *      TSPSHARPBEND,  //急转弯事件
+           TSPSHARPSLOWbOWN, //  急减速事件
+           TSPSPEEDUP,       //急加速事件
+           TSPDRIVING,      //疲劳驾驶
+           TSPSPEEDPOLICE,  //超速报警
+           TSPLDLE, //怠速报警
+           TSPCONDRIVING,//连续驾驶
+           TSPFENCE      //电子围栏
+    *    messageReceived接收客户端的数据
+    * */
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, BaseMsg msg) throws Exception {
+
+<<<<<<< .mine
+        Date currentTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(currentTime);
+        TSPReplyMsg rep = new TSPReplyMsg();
+=======
+         Date currentTime = new Date();
+         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+         String dateString = formatter.format(currentTime);
+         TSPReplyMsg  rep= new TSPReplyMsg();
+         InternalLoggerFactory.setDefaultFactory(new Slf4JLoggerFactory());
+
+>>>>>>> .r11514
+
+<<<<<<< .mine
+=======
+        // System.out.println("接收对象时间===========XXXXXXXXXXX" + dateString + "XXXXXXXXXXXXXXXXXXXX");
+>>>>>>> .r11514
+
+<<<<<<< .mine
+        // System.out.println("接收对象时间===========XXXXXXXXXXX" + dateString + "XXXXXXXXXXXXXXXXXXXX");
+=======
+      //   Jedis jedis = new Jedis("10.112.176.162",17479);
+
+       //  LogProducerUtils kafk = new LogProducerUtils();
+>>>>>>> .r11514
+
+        // Jedis jedis = new Jedis("10.112.176.162",17479);
+
+<<<<<<< .mine
+        //  LogProducerUtils kafk = new LogProducerUtils();
+=======
+                TSPGpsBasicInfoVo gps=(TSPGpsBasicInfoVo)msg;
+                
+                long start = System.currentTimeMillis();
+>>>>>>> .r11514
+
+<<<<<<< .mine
+        switch (msg.getType()) {
+            case TSPLOGIN: { //GPS
+=======
+                if (NettyChannelMap.get(gps.getClientId()) == null) {
+                    NettyChannelMap.add(gps.getClientId(), (SocketChannel) ctx.channel());
+                }
+>>>>>>> .r11514
+
+<<<<<<< .mine
+                TSPGpsBasicInfoVo gps = (TSPGpsBasicInfoVo) msg;
+                log.info("接收到数据的实体类msg成功=========="+msg);
+                rep.setReply(msg.getUuid());
+=======
+                        String key = gps.getTermCode();
+                        String vin = "";
+                        String uuid = "";
+                        long start2 = System.currentTimeMillis();
+
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                            System.out.println(jedis.hmget("carEquipment", key));
+                            vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+>>>>>>> .r11514
+
+                NettyChannelMap.get(gps.getClientId()).writeAndFlush(rep);
+                               
+<<<<<<< .mine
+=======
+                                kafk.send("gisInfo", doc.toJson());
+                                log.debug("kafkq输出"+doc.toJson());
+                         
+                                System.out.println("++++++++++++++接收到GPS数据=SUCCESS++++   1++++++++处理时间" +dateString+ "===========" + doc.toJson() + "=========================");
+                            }
+                        }
+                        long end2 = System.currentTimeMillis();
+                        System.out.println("XXXXXXXXXXXXGPS处理速度if中的redis查询XXXXXXXXXXX" + (end2 - start2) + "XXXXXXXXXXXXXXXXXXXX");
+                        long end = System.currentTimeMillis();
+>>>>>>> .r11514
+
+<<<<<<< .mine
+                long start = System.currentTimeMillis();
+                // log.info();
+                if (NettyChannelMap.get(gps.getClientId()) == null) {
+                    NettyChannelMap.add(gps.getClientId(), (SocketChannel) ctx.channel());
+                    log.info("加入通道id到map成功=========="+gps.getClientId());
+                }
+=======
+                        System.out.println("XXXXXXXXXXXXGPS处理速度XXXXXXXXXXX" + (end - start) + "XXXXXXXXXXXXXXXXXXXX");
+
+
+                    rep.setReply(msg.getUuid());
+>>>>>>> .r11514
+
+                String key = gps.getTermCode();
+                String vin = "";
+                String uuid = "";
+                long start2 = System.currentTimeMillis();
+                try{
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                   log.info("从redis中查询设备的编码不为空id============="+key);
+                    System.out.println(jedis.hmget("carEquipment", key));
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    log.info("从redis中查询车架号vincoe============="+key);
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+                        gps.setVinCodee(vin);
+                        gps.setUuiduuid(uuid);
+                        gps.setTempOnes(-1L);
+                        gps.setTempTwos(-1L);
+                        gps.setTempThre(-1L);
+                        gps.setWifiStat(0);
+                        gps.setSignalLv(5);
+                        gps.setAltitude(-1.0);
+                        Document doc = DocumentCommun.GisVo2Doc(gps);
+
+                      //  kafk.send("gisInfo", doc.toJson());
+
+                        log.info("处理方法内时间===========" + dateString);
+                        log.info("doc输出==", doc.toJson());
+                        System.out.println("++++++++++++++接收到GPS数据=SUCCESS++++   1" + doc.toJson() + "++++++++处理时间" + dateString + "===========" + doc.toJson() + "=========================");
+                    }
+                }else{
+                    System.out.println("redis 找不到设备id");
+                    log.info("redis 找不到设备id");
+                }
+                }catch (Exception e){
+                     e.getMessage();
+                }
+                long end2 = System.currentTimeMillis();
+                long end = System.currentTimeMillis();
+                System.out.println("XXXXXXXXXXXXGPS处理速度XXXXXXXXXXX" + (end - start) + "XXXXXXXXXXXXXXXXXXXX");
+
+            }
+            break;
+            case TSPWAKEUP: { //待机自换醒
+                TSPWaitWakeUp wakeUp = (TSPWaitWakeUp) msg;
+<<<<<<< .mine
+                rep.setReply(msg.getUuid());
+                NettyChannelMap.get(wakeUp.getClientId()).writeAndFlush(rep);
+                NettyChannelMap.add(wakeUp.getClientId(), (SocketChannel) ctx.channel());
+=======
+
+                NettyChannelMap.add(wakeUp.getClientId(),(SocketChannel)ctx.channel());
+
+>>>>>>> .r11514
+                String key = wakeUp.getTermCode();
+                String vin = "";
+                String uuid = "";
+
+
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                        wakeUp.setVinCodee(vin);
+                        wakeUp.setUuiduuid(uuid);
+                        wakeUp.setVoltagee(0.0);
+
+                        Document doc = DocumentCommun.getWakeup2Doc(wakeUp);
+                        long start = System.currentTimeMillis();
+                        kafk.send("wakeUpInfo", doc.toJson());
+                        long end = System.currentTimeMillis();
+                        System.out.println("========待机自换醒kafk发送速度==" + doc.toJson() + "======================================");
+                    }
+                }
+
+<<<<<<< .mine
+                System.out.println("++++++++++++接收到wakeUp的数据======2======" + wakeUp.getClientId() + " =SUCCESS++++++++++++");
+=======
+                rep.setReply(msg.getUuid());
+                NettyChannelMap.get(wakeUp.getClientId()).writeAndFlush(rep);
+                System.out.println("++++++++++++接收到wakeUp的数据======2======"+wakeUp.getClientId()  +" =SUCCESS++++++++++++");
+>>>>>>> .r11514
+            }
+            break;
+            case TSPSHARPBEND: {   //急转弯事件
+
+
+                TSPSharpBend sharpBend = (TSPSharpBend) msg;
+                long start = System.currentTimeMillis();
+                long end = System.currentTimeMillis();
+                System.out.println("++++++++++++接收到急转弯事件的数据的时间" + (end - start) + "=SUCCESS++++++++++++");
+                NettyChannelMap.add(sharpBend.getClientId(), (SocketChannel) ctx.channel());
+
+                String key = sharpBend.getTermCode();
+                String vin = "";
+                String uuid = "";
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+                        sharpBend.setVinCodee(vin);
+                        sharpBend.setUuiduuid(uuid);
+
+                        Document doc = DocumentCommun.getSharpBend2Doc(sharpBend);
+                        kafk.send("drivingHabitInfo", doc.toJson());
+                        System.out.println("++++++++++++接收到急转弯事件的数据" + doc.toJson() + "=SUCCESS++++++++++++");
+                    }
+                }
+                rep.setReply(msg.getUuid());
+
+                NettyChannelMap.get(sharpBend.getClientId()).writeAndFlush(rep);
+                System.out.println("++++++++++++接收到急转弯事件的数据" + sharpBend.getClientId() + "=SUCCESS++++++++++++");
+            }
+            break;
+            case TSPSLOWBOWN: { //  急减速事件
+                long start = System.currentTimeMillis();
+                TSPSharpSlowBown slowBown = (TSPSharpSlowBown) msg;
+                NettyChannelMap.add(slowBown.getClientId(), (SocketChannel) ctx.channel());
+                System.out.println("========急减速事件===============" + slowBown.getDrivType() + "=========================");
+
+                String key = slowBown.getTermCode();
+                String vin = "";
+                String uuid = "";
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                        slowBown.setVinCodee(vin);
+                        slowBown.setUuiduuid(uuid);
+
+                        Document doc = DocumentCommun.getSpeeddown2Doc(slowBown);
+
+                        kafk.send("drivingHabitInfo", doc.toJson());
+
+                    }
+                }
+                long end = System.currentTimeMillis();
+
+
+                System.out.println("========急减速事件处理速度===============" + (end - start) + "=========================");
+
+                rep.setReply(msg.getUuid());
+
+                NettyChannelMap.get(slowBown.getClientId()).writeAndFlush(rep);
+                System.out.println("++++++++++++接收到急减速事件的数据" + slowBown.getClientId() + "=SUCCESS++++++++++++");
+            }
+            break;
+            case TSPSPEEDUP: { //急加速事件
+                long start = System.currentTimeMillis();
+                TSPSpeedUp speedUp = (TSPSpeedUp) msg;
+                NettyChannelMap.add(speedUp.getClientId(), (SocketChannel) ctx.channel());
+
+                System.out.println("++++++++++++接收到急加速事件的数据" + speedUp.getClientId() + "=SUCCESS++++++++++++");
+
+
+                String key = speedUp.getTermCode();
+                String vin = "";
+                String uuid = "";
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                        speedUp.setVinCodee(vin);
+                        speedUp.setUuiduuid(uuid);
+
+
+                        Document doc = DocumentCommun.getSpeedUp2Doc(speedUp);
+                        kafk.send("drivingHabitInfo", doc.toJson());
+                    }
+                }
+                long end = System.currentTimeMillis();
+                System.out.println("========急加速事件处理速度===============" + (end - start) + "=========================");
+
+
+                //  TSPReplyMsg rep = new TSPReplyMsg();
+                rep.setReply(msg.getUuid());
+
+                NettyChannelMap.get(speedUp.getClientId()).writeAndFlush(rep);
+                System.out.println("++++++++++++接收到急加速事件的数据" + speedUp.getClientId() + "=SUCCESS++++++++++++");
+            }
+            break;
+            case TSPDRIVING: { //疲劳驾驶
+                long start1 = System.currentTimeMillis();
+                TSPFatigueDriving fatigueDriving = (TSPFatigueDriving) msg;
+                NettyChannelMap.add(fatigueDriving.getClientId(), (SocketChannel) ctx.channel());
+                long end1 = System.currentTimeMillis();
+                System.out.println("++++++++++++接收到疲劳驾驶事件的数据时间" + (end1 - start1) + "=SUCCESS++++++++++++");
+
+                long start2 = System.currentTimeMillis();
+                String key = fatigueDriving.getTermCode();
+                String vin = "";
+                String uuid = "";
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                        fatigueDriving.setVinCodee(vin);
+                        fatigueDriving.setUuiduuid(uuid);
+
+
+                        Document doc = DocumentCommun.FatigueDriving2Doc(fatigueDriving);
+
+                        kafk.send("drivingHabitInfo", doc.toJson());
+                    }
+                }
+                long end2 = System.currentTimeMillis();
+                System.out.println("========疲劳驾驶查redis的时间===============" + (end2 - start2) + "=========================");
+
+
+                //    TSPReplyMsg rep = new TSPReplyMsg();
+                rep.setReply(msg.getUuid());
+
+                NettyChannelMap.get(fatigueDriving.getClientId()).writeAndFlush(rep);
+                System.out.println("++++++++++++接收到疲劳驾驶的数据" + fatigueDriving.getClientId() + "=SUCCESS++++++++++++");
+            }
+            break;
+            case TSPSPEEDPOLICE: { //超速报警
+                TSPCallPolice speedPolice = (TSPCallPolice) msg;
+                NettyChannelMap.add(speedPolice.getClientId(), (SocketChannel) ctx.channel());
+
+
+                String key = speedPolice.getTermCode();
+                String vin = "";
+                String uuid = "";
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                        speedPolice.setVinCodee(vin);
+                        speedPolice.setUuiduuid(uuid);
+
+
+                        Document doc = DocumentCommun.CallPolice2Doc(speedPolice);
+
+                        kafk.send("alarmInfo", doc.toJson());
+                    }
+                }
+
+                System.out.println("========超速报警===============" + speedPolice.getTermCode() + "=========================");
+
+                //    TSPReplyMsg rep = new TSPReplyMsg();
+                rep.setReply(msg.getUuid());
+
+                NettyChannelMap.get(speedPolice.getClientId()).writeAndFlush(rep);
+                System.out.println("++++++++++++接收到超速报警的数据" + speedPolice.getClientId() + "=SUCCESS++++++++++++");
+            }
+            break;
+            case TSPLDLE: { //怠速报警
+                TSPLdleCallPolice ldleCall = (TSPLdleCallPolice) msg;
+                NettyChannelMap.add(ldleCall.getClientId(), (SocketChannel) ctx.channel());
+
+
+                String key = ldleCall.getTermCode();
+                String vin = "";
+                String uuid = "";
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                        ldleCall.setVinCodee(vin);
+                        ldleCall.setUuiduuid(uuid);
+
+                        Document doc = DocumentCommun.LdleCallPolice2Doc(ldleCall);
+
+                        kafk.send("alarmInfo", doc.toJson());
+                    }
+                }
+
+                System.out.println("========怠速报警===============" + ldleCall.getTermCode() + "=========================");
+
+
+                //   TSPReplyMsg rep = new TSPReplyMsg();
+                rep.setReply(msg.getUuid());
+
+                NettyChannelMap.get(ldleCall.getClientId()).writeAndFlush(rep);
+                System.out.println("++++++++++++接收到怠速报警的数据" + ldleCall.getClientId() + "=SUCCESS++++++++++++");
+            }
+            break;
+            case TSPCONDRIVING: { //持续驾驶报警
+                TSPContinuousDriving continDriving = (TSPContinuousDriving) msg;
+                NettyChannelMap.add(continDriving.getClientId(), (SocketChannel) ctx.channel());
+
+
+                String key = continDriving.getTermCode();
+                String vin = "";
+                String uuid = "";
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                        continDriving.setVinCodee(vin);
+                        continDriving.setUuiduuid(uuid);
+
+                        Document doc = DocumentCommun.ContinuousDriving2Doc(continDriving);
+
+                        kafk.send("alarmInfo", doc.toJson());
+                    }
+                }
+
+                System.out.println("========持续驾驶报警===============" + continDriving.getTermCode() + "=========================");
+
+                //  TSPReplyMsg rep = new TSPReplyMsg();
+                rep.setReply(msg.getUuid());
+
+                NettyChannelMap.get(continDriving.getClientId()).writeAndFlush(rep);
+                System.out.println("++++++++++++接收到持续驾驶警的数据" + continDriving.getClientId() + "=SUCCESS++++++++++++");
+            }
+            break;
+            case TSPFENCE: { //电子围栏
+                TSPFence fence = (TSPFence) msg;
+                NettyChannelMap.add(fence.getClientId(), (SocketChannel) ctx.channel());
+                String key = fence.getTermCode();
+                String vin = "";
+                String uuid = "";
+                if (jedis.hmget("carEquipment", key).get(0) != null) {
+                    vin = jedis.hmget("carEquipment", key).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                        fence.setVinCodee(vin);
+                        fence.setUuiduuid(uuid);
+
+                        Document doc = DocumentCommun.Fence2Doc(fence);
+
+                        kafk.send("alarmInfo", doc.toJson());
+                    }
+                }
+                rep.setReply(msg.getUuid());
+
+                NettyChannelMap.get(fence.getClientId()).writeAndFlush(rep);
+                System.out.println("++++++++++++接收到电子围栏的数据" + fence.getClientId() + "=SUCCESS++++++++++++");
+            }
+            break;
+            case TSPPING: {
+                //心跳信息
+                TSPPingMsg pingMsg = (TSPPingMsg) msg;
+                TSPPingMsg replyPing = new TSPPingMsg();
+                replyPing.setI(500);
+                NettyChannelMap.get(pingMsg.getClientId()).writeAndFlush(replyPing);
+
+            }
+            break;
+            default:
+                break;
+        }
+        ReferenceCountUtil.release(msg);
+    }
+
+}
+

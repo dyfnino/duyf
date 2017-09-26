@@ -1,0 +1,23 @@
+package tcp;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import msg.TSPGpsBasicInfoVo;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-7
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class Test {
+
+    public static void main(String[] args) {
+        TSPGpsBasicInfoVo g=new   TSPGpsBasicInfoVo();
+            g.setTempOnes(-1L);
+
+        JSONObject js= (JSONObject) JSON.toJSON(g);
+                System.out.println(js);
+    }
+}

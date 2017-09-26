@@ -1,0 +1,64 @@
+package com.samton.server;
+
+import com.samton.util.DocumentCommun;
+import com.samton.util.LogProducerUtils;
+import com.samton.util.RedisUtil;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import msg.TSPSpeedUp;
+import org.bson.Document;
+
+
+import java.util.LinkedList;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-12
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class TSPSpeedUpTread implements Runnable {
+    private static final InternalLogger log = InternalLoggerFactory.getInstance(TSPSpeedUpTread.class);
+    private RedisUtil redis;
+    private LogProducerUtils kafk;
+    private TSPSpeedUp speedUp;
+    private LinkedList lists;
+
+    public TSPSpeedUpTread(LinkedList lists, RedisUtil redis, LogProducerUtils kafk) {
+        this.lists = lists;
+        // this.speedUp = speedUp;
+        this.redis = redis;
+        this.kafk = kafk;
+    }
+
+
+    public void run() {
+
+
+        for (int i = 0; i < lists.size(); i++) {
+
+            speedUp = (TSPSpeedUp) lists.get(i);
+
+            String vin = "";
+            String uuid = "";
+
+            if (redis.hmget("carEquipment", speedUp.getTermCode()).get(0) != null) {
+                vin = redis.hmget("carEquipment", speedUp.getTermCode()).get(0).toString().split("car_card=")[1].split("}")[0];
+                if (redis.hmget("carvinuuid", vin) != null) {
+                    uuid = redis.hmget("carvinuuid", vin).get(0).toString();
+
+                    speedUp.setVinCodee(vin);
+                    speedUp.setUuiduuid(uuid);
+
+
+                    Document doc = DocumentCommun.getSpeedUp2Doc(speedUp);
+                    System.out.println("没发送之前急加速事件kfka输出====" + doc.toJson());
+                    kafk.send("drivingHabitInfo", doc.toJson());
+                    log.debug("急加速事件kfka输出====" + doc.toJson());
+                }
+            }
+        }
+
+    }
+}

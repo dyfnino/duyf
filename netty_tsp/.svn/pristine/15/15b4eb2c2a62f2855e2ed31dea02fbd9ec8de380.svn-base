@@ -1,0 +1,96 @@
+package com.samton.vo.drivType;
+
+import java.io.Serializable;
+
+/**
+ * 急转弯
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/28
+ */
+public class SharpTurnVo implements Serializable {
+//    termCode		设备ID(String)
+//    timeStam		时间(Long)
+//    drivType		驾驶事件类型：急转弯事件(int)
+//    direTurn			转弯方向(int)
+//    angulVel		角速度(Long)
+//    laterAge			横向加速度(Double)
+
+    /**
+     * 设备ID(Strng)
+     */
+    public String termCode;
+
+    /**
+     * 时间(LONG)
+     */
+    public long timestam;
+
+    /**
+     * 驾驶事件类型：空档滑行事件(int)
+     */
+    public int drivType;
+
+    /**
+     * 转弯方向(int)
+     */
+    public int direTurn;
+
+    /**
+     * 角速度(Long)
+     */
+    public long angulVel;
+
+    /**
+     * 横向加速度(Double)
+     */
+    public double laterAge;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimestam() {
+        return timestam;
+    }
+
+    public void setTimestam(long timestam) {
+        this.timestam = timestam;
+    }
+
+    public int getDrivType() {
+        return drivType;
+    }
+
+    public void setDrivType(int drivType) {
+        this.drivType = drivType;
+    }
+
+    public int getDireTurn() {
+        return direTurn;
+    }
+
+    public void setDireTurn(int direTurn) {
+        this.direTurn = direTurn;
+    }
+
+    public long getAngulVel() {
+        return angulVel;
+    }
+
+    public void setAngulVel(long angulVel) {
+        this.angulVel = angulVel;
+    }
+
+    public double getLaterAge() {
+        return laterAge;
+    }
+
+    public void setLaterAge(double laterAge) {
+        this.laterAge = laterAge;
+    }
+}

@@ -1,0 +1,237 @@
+package com.samton.vo.collision;
+
+import java.io.Serializable;
+
+/**
+ * 前车碰撞信
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/29
+ */
+public class VehicleCollisionVo implements Serializable {
+
+//    termCode		设备ID(String)
+//    timeStam		时间(LONG)
+//    latitude			经度(String)
+//    longtude			纬度(String)
+//    altitude			高程(DOUBLE)
+//    curSpeed		当前速度(DOUBLE)
+//    director			方向(Int)
+//    satelite			连接卫星数(Int)
+//    gpsPreci			GPS位置精度(LONG)
+//    vehiDist			和前车距离(DOUBLE)
+//    exColTim		预期碰撞时间(DOUBLE)
+//    confiden			检测置信度(Int)
+//    alarmLev		报警等级(Int)
+//    lstSpeed			前一次速度(DOUBLE)
+//    timeThre		碰撞时间阈值(DOUBLE)
+//    distThre			碰撞距离阈值(DOUBLE)
+
+    /**
+     * 设备ID（String）
+     */
+    public String termCode;
+
+    /**
+     * 时间（Long）
+     */
+    public long timeStam;
+
+    /**
+     * 经度：（W87232323）（String）
+     */
+    public String latitude;
+
+    /**
+     * 纬度：（N87121212）（String）
+     */
+    public String longitude;
+
+    /**
+     * 高程（Double）
+     */
+    public double altitude;
+
+    /**
+     * 速度（Double）
+     */
+    public double speedsss;
+
+    /**
+     * 方向（Int）
+     */
+    public int director;
+
+    /**
+     * 连接卫星数（Int）
+     */
+    public int satellit;
+
+    /**
+     * GPS位置精度(LONG)
+     */
+    public long gpsPreci;
+
+    /**
+     * 和前车距离(DOUBLE)
+     */
+    public double vehiDist;
+
+    /**
+     * 预期碰撞时间(DOUBLE)
+     */
+    public double exColTim;
+
+    /**
+     * 检测置信度(Int)
+     */
+    public int confiden;
+
+    /**
+     * 报警等级(Int)
+     */
+    public int alarmLev;
+
+    /**
+     * 前一次速度(DOUBLE)
+     */
+    public double lstSpeed;
+
+    /**
+     * 碰撞时间阈值(DOUBLE)
+     */
+    public double timeThre;
+
+    /**
+     * 碰撞距离阈值(DOUBLE)
+     */
+    public double distThre;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimeStam() {
+        return timeStam;
+    }
+
+    public void setTimeStam(long timeStam) {
+        this.timeStam = timeStam;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getAltitude() {
+        return altitude;
+    }
+
+    public void setAltitude(double altitude) {
+        this.altitude = altitude;
+    }
+
+    public double getSpeedsss() {
+        return speedsss;
+    }
+
+    public void setSpeedsss(double speedsss) {
+        this.speedsss = speedsss;
+    }
+
+    public int getDirector() {
+        return director;
+    }
+
+    public void setDirector(int director) {
+        this.director = director;
+    }
+
+    public int getSatellit() {
+        return satellit;
+    }
+
+    public void setSatellit(int satellit) {
+        this.satellit = satellit;
+    }
+
+    public long getGpsPreci() {
+        return gpsPreci;
+    }
+
+    public void setGpsPreci(long gpsPreci) {
+        this.gpsPreci = gpsPreci;
+    }
+
+    public double getVehiDist() {
+        return vehiDist;
+    }
+
+    public void setVehiDist(double vehiDist) {
+        this.vehiDist = vehiDist;
+    }
+
+    public double getExColTim() {
+        return exColTim;
+    }
+
+    public void setExColTim(double exColTim) {
+        this.exColTim = exColTim;
+    }
+
+    public int getConfiden() {
+        return confiden;
+    }
+
+    public void setConfiden(int confiden) {
+        this.confiden = confiden;
+    }
+
+    public int getAlarmLev() {
+        return alarmLev;
+    }
+
+    public void setAlarmLev(int alarmLev) {
+        this.alarmLev = alarmLev;
+    }
+
+    public double getLstSpeed() {
+        return lstSpeed;
+    }
+
+    public void setLstSpeed(double lstSpeed) {
+        this.lstSpeed = lstSpeed;
+    }
+
+    public double getTimeThre() {
+        return timeThre;
+    }
+
+    public void setTimeThre(double timeThre) {
+        this.timeThre = timeThre;
+    }
+
+    public double getDistThre() {
+        return distThre;
+    }
+
+    public void setDistThre(double distThre) {
+        this.distThre = distThre;
+    }
+}

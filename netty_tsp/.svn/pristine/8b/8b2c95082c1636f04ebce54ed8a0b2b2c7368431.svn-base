@@ -1,0 +1,59 @@
+package com.samton.server;
+
+import com.samton.util.DocumentCommun;
+import com.samton.util.LogProducerUtils;
+import com.samton.util.RedisUtil;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import msg.TSPContinuousDriving;
+import org.bson.Document;
+import java.util.LinkedList;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-13
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class TSPConDrivingPoliThread implements Runnable {
+    private static final InternalLogger log = InternalLoggerFactory.getInstance(TSPFatigueDrivingTread.class);
+    private TSPContinuousDriving continDriving;
+    private RedisUtil redis;
+    private LogProducerUtils kafk;
+    private LinkedList lists;
+
+    public TSPConDrivingPoliThread(LinkedList lists, RedisUtil redis, LogProducerUtils kafk) {
+        this.lists = lists;
+        // this.continDriving = continDriving;
+        this.redis = redis;
+        this.kafk = kafk;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i < lists.size(); i++) {
+            log.info("====进入连续驾驶报警线程====");
+            continDriving = (TSPContinuousDriving) lists.get(i);
+             System.out.println("====进入连续驾驶报警线程====");
+
+            String vin = "";
+            String uuid = "";
+
+            if (redis.hmget("carEquipment", continDriving.getTermCode()).get(0) != null) {
+                vin = redis.hmget("carEquipment", continDriving.getTermCode()).get(0).toString().split("car_card=")[1].split("}")[0];
+                if (redis.hmget("carvinuuid", vin) != null) {
+                    uuid = redis.hmget("carvinuuid", vin).get(0).toString();
+
+                    continDriving.setVinCodee(vin);
+                    continDriving.setUuiduuid(uuid);
+
+                    Document doc = DocumentCommun.ContinuousDriving2Doc(continDriving);
+                    System.out.println("====进入连续驾驶报警===="+doc.toJson());
+                    kafk.send("alarmInfo", doc.toJson());
+                    log.info("持续驾驶报警========"+doc.toJson());
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,28 @@
+package com.samton.util;
+
+import java.util.logging.Logger;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-6
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class Log4jUtil {
+    public static Logger getSQLLogger(){
+        return Logger.getLogger("sql");
+    }
+
+    public static Logger getBusinessLogger(){
+        return Logger.getLogger("business");
+    }
+
+    public static Logger getSimpleErrorLogger(){
+        return Logger.getLogger("simpleError");
+    }
+
+    public static Logger getNormalErrorLogger(){
+        return Logger.getLogger("normalError");
+    }
+}

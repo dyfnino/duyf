@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.samton:dmp_constants:0.0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/samton/dmp_constants/0.0.1-SNAPSHOT/dmp_constants-0.0.1-20170921.071342-35.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/samton/dmp_constants/0.0.1-SNAPSHOT/dmp_constants-0.0.1-20170921.071342-35-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/samton/dmp_constants/0.0.1-SNAPSHOT/dmp_constants-0.0.1-20170921.071342-35-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

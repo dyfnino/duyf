@@ -1,0 +1,60 @@
+package com.samton.server;
+
+import com.samton.util.DocumentCommun;
+import com.samton.util.LogProducerUtils;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import msg.TSPContinuousDriving;
+import msg.TSPFatigueDriving;
+import org.bson.Document;
+import redis.clients.jedis.Jedis;
+
+import java.util.LinkedList;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-13
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class TSPConDrivingPoliThread implements Runnable {
+    private static final InternalLogger log = InternalLoggerFactory.getInstance(TSPFatigueDrivingTread.class);
+    private TSPContinuousDriving continDriving;
+    private Jedis jedis;
+    private LogProducerUtils kafk;
+    private LinkedList lists;
+
+    public TSPConDrivingPoliThread(LinkedList lists, Jedis jedis, LogProducerUtils kafk) {
+        this.lists = lists;
+        // this.continDriving = continDriving;
+        this.jedis = jedis;
+        this.kafk = kafk;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i < lists.size(); i++) {
+
+            continDriving = (TSPContinuousDriving) lists.get(i);
+
+            String vin = "";
+            String uuid = "";
+            long start = System.currentTimeMillis();
+            if (jedis.hmget("carEquipment", continDriving.getTermCode()).get(0) != null) {
+                vin = jedis.hmget("carEquipment", continDriving.getTermCode()).get(0).split("car_card=")[1].split("}")[0];
+                if (jedis.hmget("carvinuuid", vin) != null) {
+                    uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                    continDriving.setVinCodee(vin);
+                    continDriving.setUuiduuid(uuid);
+
+                    Document doc = DocumentCommun.ContinuousDriving2Doc(continDriving);
+
+                    kafk.send("alarmInfo", doc.toJson());
+                    log.debug("持续驾驶报警"+doc.toJson());
+                }
+            }
+        }
+    }
+}

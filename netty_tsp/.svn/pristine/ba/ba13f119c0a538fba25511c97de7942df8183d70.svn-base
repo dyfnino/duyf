@@ -1,0 +1,50 @@
+package com.samton.server;
+
+import com.samton.util.DocumentCommun;
+import com.samton.util.LogProducerUtils;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import msg.TSPFatigueDriving;
+import msg.TSPLdleCallPolice;
+import org.bson.Document;
+import redis.clients.jedis.Jedis;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-12
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class TSPLdleCallPoliceTread implements Runnable{
+    private static final InternalLogger log = InternalLoggerFactory.getInstance(TSPLdleCallPoliceTread.class);
+    private TSPLdleCallPolice ldleCall;
+    private Jedis jedis;
+    private LogProducerUtils kafk;
+
+    public TSPLdleCallPoliceTread( TSPLdleCallPolice ldleCall, Jedis jedis,LogProducerUtils kafk) {
+        this.kafk = kafk;
+        this.ldleCall = ldleCall;
+        this.jedis = jedis;
+    }
+
+    @Override
+    public void run() {
+
+
+                if (jedis.hmget("carEquipment", ldleCall.getTermCode()).get(0) != null) {
+                 String   vin = jedis.hmget("carEquipment", ldleCall.getTermCode()).get(0).split("car_card=")[1].split("}")[0];
+                    if (jedis.hmget("carvinuuid", vin) != null) {
+                        String    uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                        ldleCall.setVinCodee(vin);
+                        ldleCall.setUuiduuid(uuid);
+
+                        Document doc = DocumentCommun.LdleCallPolice2Doc(ldleCall);
+
+                        kafk.send("alarmInfo", doc.toJson());
+                    }
+                }
+
+    }
+}

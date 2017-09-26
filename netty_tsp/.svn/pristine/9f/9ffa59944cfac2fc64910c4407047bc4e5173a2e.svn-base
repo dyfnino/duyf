@@ -1,0 +1,70 @@
+package com.samton.vo.alarmTyp;
+
+import java.io.Serializable;
+
+/**
+ *
+ * 碰撞报警
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/7/3
+ */
+public class CollisionAlarmVo implements Serializable{
+//    termCode		终端ID(String)
+//    timeStam		时间(LONG)
+//    alarmTyp		报警标识：碰撞报警(Int)
+//    latitude			经度(String)
+//    longtude			纬度(String)
+//    speedsss			车速(Double)
+//    speedddd		转速(LONG)
+//    5sDirect			碰撞前5s时车辆转向(Int)
+//    5sAngler		碰撞前5s时车辆转角(Int)
+//    4sDirect			碰撞前4s时车辆转向(Int)
+//    4sAngler		碰撞前4s时车辆转角(Int)
+//    3sDirect			碰撞前3s时车辆转向(Int)
+//    3sAngler		碰撞前3s时车辆转角(Int)
+//    2sDirect			碰撞前2s时车辆转向(Int)
+//    2sAngler		碰撞前2s时车辆转角(Int)
+//    1sDirect			碰撞前1s时车辆转向(Int)
+//    1sAngler		碰撞前1s时车辆转角(Int)
+//    airbager			安全气囊(Int)
+    /**
+     * 设备ID（String）
+     */
+    public String termCode;
+
+    /**
+     * 时间（Long）
+     */
+    public long timeStam;
+
+    /**
+     * 报警标识：设备断电报警(Int)
+     */
+    public int alarmTyp;
+
+    /**
+     * 经度：（W87232323）（String）
+     */
+    public String latitude;
+
+    /**
+     * 纬度：（N87121212）（String）
+     */
+    public String longitude;
+
+    /**
+     * 车速(Double)
+     */
+    public double speedsss;
+
+    /**
+     * 转速(LONG)
+     */
+    public long speedddd;
+
+    /**
+     * 碰撞前5s时车辆转向(Int)
+     */
+    public int _5sDirect;
+}

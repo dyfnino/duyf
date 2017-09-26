@@ -1,0 +1,68 @@
+package com.samton.server;
+
+import com.samton.util.DocumentCommun;
+import com.samton.util.LogProducerUtils;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import msg.TSPGpsBasicInfoVo;
+import org.bson.Document;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-7
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class GpsThread implements Runnable {
+    private static final InternalLogger log = InternalLoggerFactory.getInstance(GpsThread.class);
+    private TSPGpsBasicInfoVo gps;
+    private Jedis jedis;
+    private LogProducerUtils kafk;
+
+    public GpsThread(TSPGpsBasicInfoVo gps,Jedis jedis,LogProducerUtils kafk) {
+        this.gps=gps;
+        this.jedis=jedis;
+        this.kafk=kafk;
+
+    }
+    public void run() {
+        long start = System.currentTimeMillis();
+        if (jedis.hmget("carEquipment", gps.getTermCode()).get(0) != null) {
+            long end = System.currentTimeMillis();
+            System.out.println("======查询redis判断时间========"+(end-start)+"============");
+            String  vin = jedis.hmget("carEquipment", gps.getTermCode()).get(0).split("car_card=")[1].split("}")[0];
+
+            if (jedis.hmget("carvinuuid", vin) != null) {
+                String   uuid = jedis.hmget("carvinuuid", vin).get(0);
+                gps.setVinCodee(vin);
+                gps.setUuiduuid(uuid);
+                gps.setTempOnes(-1L);
+                gps.setTempTwos(-1L);
+                gps.setTempThre(-1L);
+                gps.setWifiStat(0);
+                gps.setSignalLv(5);
+                gps.setAltitude(-1.0);//
+                Document doc = DocumentCommun.GisVo2Doc(gps);
+
+                kafk.send("gisInfo", doc.toJson());
+                 log.debug("GPS的输出"+doc.toJson());
+                System.out.println("gisInfo"+doc.toJson());
+            }
+        }
+
+
+
+    }
+
+
+
+
+}
+
+
+

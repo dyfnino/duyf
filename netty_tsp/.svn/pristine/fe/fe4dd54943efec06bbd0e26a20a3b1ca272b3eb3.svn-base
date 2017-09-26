@@ -1,0 +1,68 @@
+package com.samton.vo.drivType;
+
+import java.io.Serializable;
+
+/**
+ * 急减速
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/28
+ */
+public class SharpSlowdownVo implements Serializable {
+//    termCode		设备ID(String)
+//    timeStam		时间(Long)
+//    drivType		驾驶事件类型：急减速事件(int)
+//    sharpAge		急减加速度(Double)
+
+    /**
+     * 设备ID(String)
+     */
+    public String termCode;
+
+    /**
+     * 时间(LONG)
+     */
+    public long timeStam;
+
+    /**
+     * 驾驶事件类型：急减速事件(int)
+     */
+    public int drivType;
+
+    /**
+     * 急减加速度(Double)
+     */
+    public double sharpAge;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimeStam() {
+        return timeStam;
+    }
+
+    public void setTimeStam(long timeStam) {
+        this.timeStam = timeStam;
+    }
+
+    public int getDrivType() {
+        return drivType;
+    }
+
+    public void setDrivType(int drivType) {
+        this.drivType = drivType;
+    }
+
+    public double getSharpAge() {
+        return sharpAge;
+    }
+
+    public void setSharpAge(double sharpAge) {
+        this.sharpAge = sharpAge;
+    }
+}

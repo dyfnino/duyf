@@ -1,0 +1,55 @@
+package com.samton.server;
+
+import com.samton.util.DocumentCommun;
+import com.samton.util.LogProducerUtils;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import msg.TSPWaitWakeUp;
+import org.bson.Document;
+import redis.clients.jedis.Jedis;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-12
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class WakeUpTread implements Runnable{
+    private static final InternalLogger log = InternalLoggerFactory.getInstance(WakeUpTread.class);
+    private TSPWaitWakeUp wakeUp;
+    private Jedis jedis;
+    private LogProducerUtils kafk;
+    public WakeUpTread(TSPWaitWakeUp wakeUp,Jedis jedis,LogProducerUtils kafk) {
+        this.wakeUp=wakeUp;
+        this.jedis=jedis;
+        this.kafk=kafk;
+    }
+
+    public void run() {
+        long start = System.currentTimeMillis();
+        if (jedis.hmget("carEquipment", wakeUp.getTermCode()).get(0) != null) {
+            long end = System.currentTimeMillis();
+            System.out.println("wakeUp查询redis时间======2======"+(end-start)+" =SUCCESS++++++++++++");
+            String  vin = jedis.hmget("carEquipment", wakeUp.getTermCode()).get(0).split("car_card=")[1].split("}")[0];
+            if (jedis.hmget("carvinuuid", vin) != null) {
+                String   uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                System.out.println("开机自唤醒的"+uuid);
+                wakeUp.setVinCodee(vin);
+                wakeUp.setUuiduuid(uuid);
+                wakeUp.setVoltagee(0.0);
+
+                Document doc = DocumentCommun.getWakeup2Doc(wakeUp);
+                long start1 = System.currentTimeMillis();
+                kafk.send("wakeUpInfo", doc.toJson());
+                log.debug("wakeUpInfo"+doc.toJson());
+                long end1 = System.currentTimeMillis();
+                System.out.println("======kafk发送时间====="+(end1-start1)+"===================");
+                System.out.println("wakeup的输出"+doc.toJson());
+            }
+        }
+
+
+    }
+}

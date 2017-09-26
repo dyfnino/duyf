@@ -1,0 +1,69 @@
+package com.samton.vo.drivType;
+
+import java.io.Serializable;
+
+/**
+ *
+ * 疲劳驾驶
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/28
+ */
+public class FatigueDrivingVo implements Serializable {
+//    termCode		设备ID(String)
+//    timeStam		时间(LONG)
+//    drivType		驾驶事件类型：疲劳驾驶事件(int)
+//    totLengt			本次行程疲劳驾驶总时长(Double)
+
+    /**
+     * 设备ID(String)
+     */
+    public String termCode;
+
+    /**
+     * 时间(LONG)
+     */
+    public long timeStam;
+
+    /**
+     * 驾驶事件类型：急减速事件(int)
+     */
+    public int drivType;
+
+    /**
+     * 本次行程疲劳驾驶总时长(Double)
+     */
+    public double totLengt;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimeStam() {
+        return timeStam;
+    }
+
+    public void setTimeStam(long timeStam) {
+        this.timeStam = timeStam;
+    }
+
+    public int getDrivType() {
+        return drivType;
+    }
+
+    public void setDrivType(int drivType) {
+        this.drivType = drivType;
+    }
+
+    public double getTotLengt() {
+        return totLengt;
+    }
+
+    public void setTotLengt(double totLengt) {
+        this.totLengt = totLengt;
+    }
+}

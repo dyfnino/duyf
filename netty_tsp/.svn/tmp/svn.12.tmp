@@ -1,0 +1,156 @@
+package com.samton.server;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.samton.util.LogProducerUtils;
+import com.samton.util.RedisUtil;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.internal.logging.Slf4JLoggerFactory;
+import msg.Constants;
+import msg.TSPGpsBasicInfoVo;
+import org.jboss.netty.handler.execution.ExecutionHandler;
+import org.jboss.netty.handler.execution.MemoryAwareThreadPoolExecutor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-8-31
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class NettyServerBootstrap{
+	private static final InternalLogger log = InternalLoggerFactory.getInstance(NettyServerBootstrap.class);
+    private int port;
+    private Jedis jedis;
+    private LogProducerUtils kafa;
+
+    public Jedis getConn(){
+    	log.debug("redis连接开始");
+    	Jedis jedis = new Jedis("10.112.176.162",17479);
+
+        if(jedis.isConnected()){
+            this.getConn();
+        }
+        jedis.auth("$1$samtonre$qy/tQZ1rQFL5IvDa6vrss.");
+
+        return jedis;
+        
+    }
+
+    public NettyServerBootstrap(int port) throws InterruptedException {
+
+       // jedis = new Jedis("112.35.29.197",17479);
+        jedis =getConn();
+        //jedis.auth("$1$samtonre$qy/tQZ1rQFL5IvDa6vrss.");
+
+        try {
+        	 
+        	kafa=new LogProducerUtils();
+        	log.debug("kafk启动成功=======================");
+        } catch (Exception e) {
+            e.printStackTrace(); 
+            log.debug("kafk启动异常======================="+e);
+        }
+
+
+        this.port = port;
+        log.debug("使用的端口号========================"+port);
+        bind();
+    }
+  //yuanlai  static final EventExecutorGroup group = new DefaultEventExecutorGroup(16);
+        public void bind()throws InterruptedException{
+            EventLoopGroup boss = new NioEventLoopGroup();
+
+            EventLoopGroup worker = new NioEventLoopGroup();
+            try {
+                ServerBootstrap bootstrap = new ServerBootstrap();
+                bootstrap.group(boss, worker);
+                bootstrap.channel(NioServerSocketChannel.class);
+                //连接数
+                bootstrap.childOption(ChannelOption.SO_BACKLOG,1024);
+                //通过NoDelay禁用Nagle,使消息立即发出去，不用等待到一定的数据量才发出去
+                bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+                //重用地址
+                // bootstrap.childOption(ChannelOption.SO_REUSEADDR, true);
+                //设置缓存区大小
+                bootstrap.childOption(ChannelOption.SO_RCVBUF, 1024);
+                //保持长连接状态
+                bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+
+
+                bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
+
+                    @Override
+                    protected void initChannel(SocketChannel socketChannel) throws Exception {
+
+                        ChannelPipeline p = socketChannel.pipeline();
+
+
+                        ExecutionHandler executionHandler = new ExecutionHandler(new MemoryAwareThreadPoolExecutor(16, 1048576, 1048576));
+                        // p.addLast("logging", new LoggingHandler(LogLevel.INFO));
+                        p.addLast(new ObjectEncoder());
+
+                        p.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+                        //  p.addLast(new IdleStateHandler(READ_IDEL_TIME_OUT,WRITE_IDEL_TIME_OUT, ALL_IDEL_TIME_OUT, TimeUnit.SECONDS) );
+                        //读写超时设置
+                        //  p.addLast(new IdleStateHandler(6,6, 10, TimeUnit.SECONDS) );
+                        //  p.addLast(new ReadTimeoutHandler(5)); //设置连接时间，超过5秒没有请求就断开
+
+                        //   p.addLast(new ExecutionHandler());
+                        p.addLast( new NettyServerHandler(kafa,jedis));
+
+                    }
+
+                });
+
+                ChannelFuture f = bootstrap.bind(9999).sync();
+                System.out.println("server start---------------");
+             //   f.channel().closeFuture().sync();
+
+            }catch (Exception e) {
+                System.out.println("启动Netty服务异常，异常信息：" + e.getMessage());
+                e.printStackTrace();
+                log.debug("启动Netty服务异常"+e);
+            }finally {
+                boss.shutdownGracefully();
+                worker.shutdownGracefully();
+            }
+        }
+
+
+    public static void main(String[] args) throws InterruptedException {
+        //  LogProducerUtils kafk1 = new LogProducerUtils();
+
+        NettyServerBootstrap bootstrap = new NettyServerBootstrap(9999);
+        //TimeUnit.SECONDS.sleep(40);
+/*         while (true){
+               SocketChannel channel=(SocketChannel) NettyChannelMap.get(Constants.getClientId());
+               TimeUnit.SECONDS.sleep(5);
+        }*/
+    }
+
+
+}

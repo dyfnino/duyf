@@ -1,0 +1,97 @@
+package com.samton.vo.drivType;
+
+import java.io.Serializable;
+
+/**
+ *
+ * 高转速
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/28
+ */
+public class HighSpeedVo implements Serializable {
+//    termCode		设备ID(String)
+//    TimeStam		时间(Long)
+//    drivType		驾驶事件类型：高转速事件(int)
+//    logoooo			标识(int)
+//    maxSpeed		转速最大值(LONG)
+//    duration			持续时间(Double)
+
+    /**
+     * 设备ID(String)
+     */
+    public String termCode;
+
+    /**
+     * 时间(LONG)
+     */
+    public long timeStam;
+
+    /**
+     * 驾驶事件类型：长怠速事件(int)
+     */
+    public int drivType;
+
+    /**
+     * 标识(int)
+     */
+    public int logoooo;
+
+    /**
+     * 转速最大值(LONG)
+     */
+    public long maxSpeed;
+
+    /**
+     * 持续时间(Double)
+     */
+    public double duration;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimeStam() {
+        return timeStam;
+    }
+
+    public void setTimeStam(long timeStam) {
+        this.timeStam = timeStam;
+    }
+
+    public int getDrivType() {
+        return drivType;
+    }
+
+    public void setDrivType(int drivType) {
+        this.drivType = drivType;
+    }
+
+    public int getLogoooo() {
+        return logoooo;
+    }
+
+    public void setLogoooo(int logoooo) {
+        this.logoooo = logoooo;
+    }
+
+    public long getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(long maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+}

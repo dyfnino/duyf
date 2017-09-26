@@ -1,0 +1,30 @@
+package com.samton.vo;
+
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelId;
+import io.netty.channel.socket.SocketChannel;
+import org.jboss.netty.util.internal.ConcurrentHashMap;
+
+import java.util.Map;
+
+/**
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/22
+ */
+public class NettyChannelMap {
+    private static Map<String,SocketChannel> map=new ConcurrentHashMap<String, SocketChannel>();
+    public static void add(String clientId,SocketChannel socketChannel){
+        map.put(clientId,socketChannel);
+    }
+    public static Channel get(String clientId){
+        return map.get(clientId);
+    }
+    public static void remove(SocketChannel socketChannel){
+        for (Map.Entry entry:map.entrySet()){
+            if (entry.getValue()==socketChannel){
+                map.remove(entry.getKey());
+            }
+        }
+    }
+}

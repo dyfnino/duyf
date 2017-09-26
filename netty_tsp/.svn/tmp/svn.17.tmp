@@ -1,0 +1,62 @@
+package com.samton.server;
+
+import com.samton.util.DocumentCommun;
+import com.samton.util.LogProducerUtils;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import msg.TSPFatigueDriving;
+import msg.TSPSharpBend;
+import org.bson.Document;
+import redis.clients.jedis.Jedis;
+
+import java.util.LinkedList;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-12
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class TSPFatigueDrivingTread implements Runnable {
+    private static final InternalLogger log = InternalLoggerFactory.getInstance(TSPFatigueDrivingTread.class);
+    private TSPFatigueDriving fatigueDriving;
+    private Jedis jedis;
+    private LogProducerUtils kafk;
+    private LinkedList lists;
+
+    public TSPFatigueDrivingTread(LinkedList lists, Jedis jedis, LogProducerUtils kafk) {
+        this.kafk = kafk;
+        this.lists = lists;
+        // this.fatigueDriving = fatigueDriving;
+        this.jedis = jedis;
+    }
+
+    @Override
+    public void run() {
+
+        for (int i = 0; i < lists.size(); i++) {
+
+            fatigueDriving = (TSPFatigueDriving) lists.get(i);
+
+            String vin = "";
+            String uuid = "";
+            if (jedis.hmget("carEquipment", fatigueDriving.getTermCode()).get(0) != null) {
+                vin = jedis.hmget("carEquipment", fatigueDriving.getTermCode()).get(0).split("car_card=")[1].split("}")[0];
+                if (jedis.hmget("carvinuuid", vin) != null) {
+                    uuid = jedis.hmget("carvinuuid", vin).get(0);
+
+                    fatigueDriving.setVinCodee(vin);
+                    fatigueDriving.setUuiduuid(uuid);
+
+                    Document doc = DocumentCommun.FatigueDriving2Doc(fatigueDriving);
+
+                    kafk.send("drivingHabitInfo", doc.toJson());
+                    log.debug("疲劳驾驶输出====" + doc.toJson());
+                }
+            }
+
+
+        }
+    }
+}

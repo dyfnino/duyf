@@ -1,0 +1,270 @@
+package com.samton.vo.lane;
+
+import java.io.Serializable;
+
+/**
+ *
+ * 车道偏离
+ *
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/29
+ */
+public class LaneDepartureVo implements Serializable {
+
+//    termCode		设备ID(String)
+//    timeStam		时间(LONG)
+//    latitude			经度(String)
+//    longtude			纬度(String)
+//    altitude			高程(Double)
+//    curSpeed		当前速度(Double)
+//    director			方向(Int)
+//    satelite			连接卫星数(Int)
+//    gpsPreci			GPS位置精度(LONG)
+//    startupp			启动速度(Double)
+//    aladurat			报警持续时间(Double)
+//    leftLane			左车道与车辆中心线距离(DOUBLE)
+//    rightLan			右车道与车辆中心线距离(DOUBLE)
+//    laneType		车道类型(Int)
+//    confiden			检测置信度(Int)
+//    alarmLev		报警等级(Int)
+//    devSpeed		偏离速度(Double)
+//    alarmLin		报警临界线值(Double)
+
+    /**
+     * 设备ID（String）
+     */
+    public String termCode;
+
+    /**
+     * 时间（Long）
+     */
+    public long timeStam;
+
+    /**
+     * 经度：（W87232323）（String）
+     */
+    public String latitude;
+
+    /**
+     * 纬度：（N87121212）（String）
+     */
+    public String longitude;
+
+    /**
+     * 高程（Double）
+     */
+    public double altitude;
+
+    /**
+     * 速度（Double）
+     */
+    public double speedsss;
+
+    /**
+     * 方向（Int）
+     */
+    public int director;
+
+    /**
+     * 连接卫星数（Int）
+     */
+    public int satellit;
+
+    /**
+     * GPS位置精度(LONG)
+     */
+    public long gpsPreci;
+
+    /**
+     * 启动速度(Double)
+     */
+    public double startupp;
+
+    /**
+     * 报警持续时间(Double)
+     */
+    public double aladurat;
+
+    /**
+     * 左车道与车辆中心线距离(DOUBLE)
+     */
+    public double leftLane;
+
+    /**
+     * 右车道与车辆中心线距离(DOUBLE)
+     */
+    public double rightLan;
+
+    /**
+     * 车道类型(Int)
+     * 车道类型：1：直道 2：曲线（原值+1）
+     */
+    public int laneType;
+
+    /**
+     * 检测置信度(Int)
+     * 检测置信度：百分比*100，前车检测置信度
+     */
+    public int confiden;
+
+    /**
+     * 报警等级(Int)
+     * 报警等级：2：紧急 3：严重 4：一般 5：轻微（原值+1）
+     */
+    public  int alarmLev;
+
+    /**
+     * 偏离速度(Double)
+     */
+    public double devSpeed;
+
+    /**
+     * 报警临界线值(Double)
+     */
+    public double alarmLin;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimeStam() {
+        return timeStam;
+    }
+
+    public void setTimeStam(long timeStam) {
+        this.timeStam = timeStam;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getAltitude() {
+        return altitude;
+    }
+
+    public void setAltitude(double altitude) {
+        this.altitude = altitude;
+    }
+
+    public double getSpeedsss() {
+        return speedsss;
+    }
+
+    public void setSpeedsss(double speedsss) {
+        this.speedsss = speedsss;
+    }
+
+    public int getDirector() {
+        return director;
+    }
+
+    public void setDirector(int director) {
+        this.director = director;
+    }
+
+    public int getSatellit() {
+        return satellit;
+    }
+
+    public void setSatellit(int satellit) {
+        this.satellit = satellit;
+    }
+
+    public long getGpsPreci() {
+        return gpsPreci;
+    }
+
+    public void setGpsPreci(long gpsPreci) {
+        this.gpsPreci = gpsPreci;
+    }
+
+    public double getStartupp() {
+        return startupp;
+    }
+
+    public void setStartupp(double startupp) {
+        this.startupp = startupp;
+    }
+
+    public double getAladurat() {
+        return aladurat;
+    }
+
+    public void setAladurat(double aladurat) {
+        this.aladurat = aladurat;
+    }
+
+    public double getLeftLane() {
+        return leftLane;
+    }
+
+    public void setLeftLane(double leftLane) {
+        this.leftLane = leftLane;
+    }
+
+    public double getRightLan() {
+        return rightLan;
+    }
+
+    public void setRightLan(double rightLan) {
+        this.rightLan = rightLan;
+    }
+
+    public int getLaneType() {
+        return laneType;
+    }
+
+    public void setLaneType(int laneType) {
+        this.laneType = laneType;
+    }
+
+    public int getConfiden() {
+        return confiden;
+    }
+
+    public void setConfiden(int confiden) {
+        this.confiden = confiden;
+    }
+
+    public int getAlarmLev() {
+        return alarmLev;
+    }
+
+    public void setAlarmLev(int alarmLev) {
+        this.alarmLev = alarmLev;
+    }
+
+    public double getDevSpeed() {
+        return devSpeed;
+    }
+
+    public void setDevSpeed(double devSpeed) {
+        this.devSpeed = devSpeed;
+    }
+
+    public double getAlarmLin() {
+        return alarmLin;
+    }
+
+    public void setAlarmLin(double alarmLin) {
+        this.alarmLin = alarmLin;
+    }
+}

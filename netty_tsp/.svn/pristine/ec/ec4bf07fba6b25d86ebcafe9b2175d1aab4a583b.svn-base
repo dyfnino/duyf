@@ -1,0 +1,98 @@
+package com.samton.vo.wake;
+
+import java.io.Serializable;
+
+/**
+ *
+ * 待机自唤醒
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/29
+ */
+public class WakeUpVo implements Serializable {
+
+//    termCode		设备ID(String)
+//    TimeStam		时间(LONG)
+//    latitude			经度(String)
+//    longtude			纬度(String)
+//    voltagee			电瓶电压(DOUBLE)
+//    duration			熄火时长(Double)
+
+    /**
+     * 设备ID(String)
+     */
+    public String termCode;
+
+    /**
+     * 时间(LONG)
+     */
+    public long timeStam;
+
+    /**
+     * 经度(String)
+     */
+    public String latitude;
+
+    /**
+     * 纬度(String)
+     */
+    public String longtude;
+
+    /**
+     * 电瓶电压(DOUBLE)
+     */
+    public double voltagee;
+
+    /**
+     * 熄火时长(Double)
+     */
+    public double duration;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimeStam() {
+        return timeStam;
+    }
+
+    public void setTimeStam(long timeStam) {
+        this.timeStam = timeStam;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongtude() {
+        return longtude;
+    }
+
+    public void setLongtude(String longtude) {
+        this.longtude = longtude;
+    }
+
+    public double getVoltagee() {
+        return voltagee;
+    }
+
+    public void setVoltagee(double voltagee) {
+        this.voltagee = voltagee;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+}

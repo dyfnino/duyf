@@ -1,0 +1,111 @@
+package com.samton.vo.drivType;
+
+import java.io.Serializable;
+
+/**
+ *
+ * 车速与转速不匹配事件
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/6/28
+ */
+public class SpeedMismatchVo implements Serializable {
+//    termCode		设备ID(String)
+//    timeStam		时间(LONG)
+//    drivType		驾驶事件类型：车速与转速不匹配事件(int)
+//    logoooo			标识(int)
+//    speedsss			速度(DOUBLE)
+//    speedddd		转速(LONG)
+//    duration			持续时间(Double)
+
+    /**
+     * 设备ID(String)
+     */
+    public String termCode;
+
+    /**
+     * 时间(LONG)
+     */
+    public long timeStam;
+
+    /**
+     * 驾驶事件类型：长怠速事件(int)
+     */
+    public int drivType;
+
+    /**
+     * 标识(int)
+     */
+    public int logoooo;
+
+    /**
+     * 速度(DOUBLE)
+     */
+    public double speedsss;
+
+    /**
+     * 转速(LONG)
+     */
+    public long speedddd;
+
+    /**
+     * 持续时间(Double)
+     */
+    public double duration;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimeStam() {
+        return timeStam;
+    }
+
+    public void setTimeStam(long timeStam) {
+        this.timeStam = timeStam;
+    }
+
+    public int getDrivType() {
+        return drivType;
+    }
+
+    public void setDrivType(int drivType) {
+        this.drivType = drivType;
+    }
+
+    public int getLogoooo() {
+        return logoooo;
+    }
+
+    public void setLogoooo(int logoooo) {
+        this.logoooo = logoooo;
+    }
+
+    public double getSpeedsss() {
+        return speedsss;
+    }
+
+    public void setSpeedsss(double speedsss) {
+        this.speedsss = speedsss;
+    }
+
+    public long getSpeedddd() {
+        return speedddd;
+    }
+
+    public void setSpeedddd(long speedddd) {
+        this.speedddd = speedddd;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+}

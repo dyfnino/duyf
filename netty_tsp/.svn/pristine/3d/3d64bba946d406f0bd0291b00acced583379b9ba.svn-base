@@ -1,0 +1,83 @@
+package com.samton.vo.alarmTyp;
+
+import java.io.Serializable;
+
+/**
+ *
+ * 设备断电报警
+ * @author xiaoyongbao
+ * @discription
+ * @created @date 17/7/3
+ */
+public class PowerOutageVo implements Serializable {
+//    termCode		终端ID(String)
+//    timeStam		时间(LONG)
+//    alarmTyp		报警标识：设备断电报警(Int)
+//    latitude			经度(String)
+//    longtude			纬度(String)
+
+    /**
+     * 终端ID(String)
+     */
+    public String termCode;
+
+    /**
+     * 时间(LONG)
+     */
+    public long timeStam;
+
+    /**
+     * 报警标识：设备断电报警(Int)
+     */
+    public int alarmTyp;
+
+    /**
+     * 经度(String)
+     */
+    public String latitude;
+
+    /**
+     * 纬度(String)
+     */
+    public String longtude;
+
+    public String getTermCode() {
+        return termCode;
+    }
+
+    public void setTermCode(String termCode) {
+        this.termCode = termCode;
+    }
+
+    public long getTimeStam() {
+        return timeStam;
+    }
+
+    public void setTimeStam(long timeStam) {
+        this.timeStam = timeStam;
+    }
+
+    public int getAlarmTyp() {
+        return alarmTyp;
+    }
+
+    public void setAlarmTyp(int alarmTyp) {
+        this.alarmTyp = alarmTyp;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongtude() {
+        return longtude;
+    }
+
+    public void setLongtude(String longtude) {
+        this.longtude = longtude;
+    }
+}

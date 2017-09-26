@@ -1,0 +1,26 @@
+package msg;
+
+import enums.MsgType;
+
+/**
+ * Created with IntelliJ IDEA.
+ * 作者: duyingfeng
+ * 日期: 17-9-2
+ * 说明:
+ * To change this template use File | Settings | File Templates.
+ */
+public class TSPReplyMsg extends BaseMsg{
+    public TSPReplyMsg() {
+        super();
+        setType(MsgType.TSPREPLY);
+    }
+    private String reply;
+
+    public String getReply() {
+        return reply;
+    }
+
+    public void setReply(String reply) {
+        this.reply = reply;
+    }
+}
